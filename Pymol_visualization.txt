@@ -1,0 +1,31 @@
+# Load your protein-ligand file
+load lig14.pdb
+
+# Identify ligand automatically (non-protein)
+select lig, organic
+
+# Select active-site residues within 5 Å of ligand
+select active, byres (lig around 5)
+
+# Visualization styles
+hide everything, all
+show cartoon, polymer
+show sticks, lig
+show sticks, active
+
+# Colors
+color cyan, polymer
+color red, lig
+color yellow, active
+
+# Remove waters
+remove solvent
+
+# Show hydrogen bonds between ligand & protein
+dist hbonds, lig, active, 3.2
+
+# Label key residues
+label active and name CA, "%s%s" % (resn, resi)
+
+# Zoom into binding site
+zoom lig, 10
