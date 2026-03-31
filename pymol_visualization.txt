@@ -1,0 +1,58 @@
+# Load structure
+load lig1.pdb
+
+# Clean workspace
+hide everything
+remove solvent
+bg_color white
+
+# Show protein cartoon (faded)
+show cartoon, polymer.protein
+color grey80, polymer.protein
+set cartoon_transparency, 0.6
+
+# Select ligand
+select ligand, organic
+show sticks, ligand
+color yellow, ligand
+set stick_radius, 0.28
+
+# Define catalytic dyad (SARS-CoV-2 Mpro)
+select catalytic, resi 41+145
+show sticks, catalytic
+color red, catalytic
+
+# Select residues within 5 Å of ligand (key pocket only)
+select pocket, byres (ligand around 5)
+
+# Show only pocket residues (avoid duplicates)
+show sticks, pocket and not ligand
+color cyan, pocket
+
+# Clean selection: only polar atoms for H-bonds
+select polar_pocket, pocket and (elem N+O)
+select polar_lig, ligand and (elem N+O)
+
+# Show ONLY hydrogen bonds (3.5 Å cutoff)
+distance hbonds, polar_lig, polar_pocket, 3.5, mode=2
+set dash_color, red
+set dash_width, 2
+hide labels, hbonds
+
+# Show ONLY hydrogen bond distances (remove extra 5Å clutter)
+label hbonds, "%.2f Å" % distance
+
+# Label only key residues (CA atoms)
+label pocket and name CA, "%s%s" % (resn, resi)
+set label_size, 18
+set label_color, black
+
+# Improve appearance
+set specular, off
+set depth_cue, 0
+set antialias, 2
+set dash_gap, 0.3
+set dash_length, 0.2
+
+# Zoom nicely
+zoom ligand, 8
